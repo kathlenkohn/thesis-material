@@ -31,3 +31,11 @@ swallowtailFlec.mp4
 Flecnodal surface of the example surface in swallowtail.mp4.
 The flecnodal surface is ruled by the flecnodal lines of the given surface.
 
+_____________________________________________________________________________
+
+To look at the interactive visualizations instead of the videos, follow these steps:
+1) Download the whole folder "chapter6".
+2) Run "sage -n jupyter" in a console from that directory. This opens a new opened browser window.
+3) Open "Examples.ipynb" in the newly opened browser window.
+4) Run the code (by clicking into it and then pressing SHIFT+ENTER).
+5) Now you should see plots that you can move with your mouse.
