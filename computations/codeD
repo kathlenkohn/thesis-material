@@ -1,0 +1,9 @@
+R = ZZ[x_0..x_3]
+f = random(3,R)
+R = QQ[x_1..x_3, a,b,c,d]
+g_0 = sub(sub(f, {x_0 => 1}),R)
+g_1 = diff(x_1, g_0) + c*diff(x_2, g_0) + d*diff(x_3, g_0)
+g_2 = diff(x_1, g_1) + c*diff(x_2, g_1) + d*diff(x_3, g_1)
+I = ideal(g_0, g_1, g_2, x_2-x_1*c-a, x_3-x_1*d-b)
+time Sing = ideal singularLocus I --took 8.4 minutes to compute
+dim Sing, degree Sing --checks that this singular locus is empty

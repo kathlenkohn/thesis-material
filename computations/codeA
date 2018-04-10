@@ -1,0 +1,30 @@
+loadPackage "Coisotropy"
+R = QQ[x_0..x_3]
+I = ideal(sum apply(4, i -> x_i^3))
+coisotropicForm (I,1)  --Hurwitz form in primal Plücker coordinates
+coisotropicForm (I,2)  --second coisotropic form
+dualVariety I
+
+________________________
+--verify that the polynomial (2.5) in the thesis is correct:
+G = Grassmannian (1,3)
+S = ring G
+v = flatten entries vars S
+q_{0,1} = v#0
+q_{0,2} = v#1
+q_{0,3} = v#3
+q_{1,2} = v#2
+q_{1,3} = v#4
+q_{2,3} = v#5
+q_{1,0} = - q_{0,1}
+q_{2,0} = - q_{0,2}
+q_{3,0} = - q_{0,3}
+q_{2,1} = - q_{1,2}
+q_{3,1} = - q_{1,3}
+q_{3,2} = - q_{2,3}
+polOld = q_{0,1}^6+q_{0,2}^6+q_{0,3}^6+q_{1,2}^6+q_{1,3}^6+q_{2,3}^6+2*(q_{1,0}^3*q_{0,2}^3+q_{1,0}^3*q_{0,3}^3+q_{2,0}^3*q_{0,3}^3+q_{0,1}^3*q_{1,2}^3+q_{0,1}^3*q_{1,3}^3+q_{2,1}^3*q_{1,3}^3+q_{0,2}^3*q_{2,1}^3+q_{0,2}^3*q_{2,3}^3+q_{1,2}^3*q_{2,3}^3+q_{0,3}^3*q_{3,1}^3+q_{0,3}^3*q_{3,2}^3+q_{1,3}^3*q_{3,2}^3)+2*(q_{0,1}*q_{2,3}*(q_{0,3}^2*q_{1,2}^2-q_{0,2}^2*q_{1,3}^2)-q_{0,2}*q_{1,3}*(q_{0,1}^2*q_{2,3}^2-q_{0,3}^2*q_{1,2}^2)+q_{0,3}*q_{1,2}*(q_{0,2}^2*q_{1,3}^2-q_{0,1}^2*q_{2,3}^2))
+polNew = coisotropicForm (I,1)
+T = ring polNew 
+Phi = map(S,T,{q_{0,1}, q_{0,2}, q_{1,2}, q_{0,3}, q_{1,3}, q_{2,3}})
+polNew = Phi(polNew)
+G+ideal(polOld) == G+ideal(polNew)

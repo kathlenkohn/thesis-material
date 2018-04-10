@@ -1,0 +1,6 @@
+loadPackage "Coisotropy"
+R = QQ[x_(0,0)..x_(1,2)]
+M = genericMatrix(R,3,2)
+I = minors(2,M)
+ch = coisotropicForm (I,0) --took 5.5 hours to compute
+primalToDual(ch,1,5)

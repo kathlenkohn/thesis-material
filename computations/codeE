@@ -1,0 +1,34 @@
+loadPackage "Coisotropy"
+R = QQ[x_0..x_3]
+f = 16*x_1^3*x_2^3-27*x_0^2*x_2^4+6*x_0*x_1^2*x_2^2*x_3-27*x_1^4*x_3^2+48*x_0^2*x_1*x_2*x_3^2-16*x_0^3*x_3^3
+I = ideal f
+dualVariety I
+
+--compute curve C in Grassmannian
+S = QQ[x_0..x_3,p_(0,1),p_(0,2),p_(0,3),p_(1,2),p_(1,3),p_(2,3)][t]
+subL = {x_0 => -p_(2,3), x_1 => t*p_(2,3), x_2 => p_(0,3)-t*p_(1,3), x_3 => t*p_(1,2)-p_(0,2)}
+coeffs = last coefficients sub(sub(f,S), subL)
+Icoeffs = ideal flatten entries coeffs
+G = QQ[p_(0,1),p_(0,2),p_(0,3),p_(1,2),p_(1,3),p_(2,3)]
+Icoeffs = sub(Icoeffs,G) + ideal(p_(0,1)*p_(2,3)-p_(0,2)*p_(1,3)+p_(0,3)*p_(1,2)) 
+C = saturate (Icoeffs, ideal(p_(2,3))) 
+C = radical C
+
+--compute edge of regression
+--first compute the union of the dual lines to the lines on C
+--this surface is dual of edge of regression
+subL = {p_(0,1) => p_(2,3), p_(0,2) => -p_(1,3), p_(0,3) => p_(1,2), p_(1,2) => p_(0,3), p_(1,3) => -p_(0,2), p_(2,3) => p_(0,1)}
+Cdual = sub(C, subL)
+S = QQ[x_0..x_3,p_(0,1),p_(0,2),p_(0,3),p_(1,2),p_(1,3),p_(2,3)]
+M = matrix{{0, p_(0,1), p_(0,2), p_(0,3)},
+{-p_(0,1), 0, p_(1,2), p_(1,3)},
+{-p_(0,2), -p_(1,2), 0, p_(2,3)},
+{-p_(0,3), -p_(1,3), -p_(2,3), 0}}
+v = transpose matrix{{x_0,x_1,x_2,x_3}}
+J = ideal flatten entries (M*v)+sub(Cdual,S) 
+plVars = {p_(0,1),p_(0,2),p_(0,3),p_(1,2),p_(1,3),p_(2,3)}
+J = saturate(J, ideal plVars)
+Edual = eliminate(J, plVars)
+Edual = sub(Edual, R)
+dualVariety Edual
+

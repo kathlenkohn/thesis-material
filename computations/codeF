@@ -1,0 +1,9 @@
+R = QQ[s,t,x_0..x_3]
+f = s^3*t^2+s^3+t^2+s+t+1
+ft = diff(t,f)
+fs = diff(s,f)
+M = matrix{{1,s,t,s*t},
+{0, -ft, fs, s*fs-t*ft},
+{x_0,x_1,x_2,x_3}}
+I = ideal(f)+minors(3,M)
+eliminate(I,{s,t}) --took 6.6 seconds to compute

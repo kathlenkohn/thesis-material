@@ -1,0 +1,39 @@
+--computes k-th subresultant of two polynomials p and q in one variable t
+subresultant = (p,q,t,k) -> (
+d0 = degree (t,p);
+d1 = degree (t,q);
+D = d0+d1;
+M = sylvesterMatrix (p,q,t);
+L1 = apply(k, i -> D-i-1);
+L2 = L1 | apply(k, i -> d1-i-1);
+M = submatrix'(M, L2, L1);
+S = apply(k+1, i -> D-(k+1+i));
+Res = {};
+scan(S, s -> Res = Res|{determinant submatrix'(M, , delete(s,S))});
+Res
+)
+
+--precompute Delta via subresultants
+R = QQ[c_0..c_5][t]
+F = sum apply(6, i -> c_i*t^i)
+Ft = diff(t,F)
+S2 = subresultant(F,Ft,t,2)
+S1 = subresultant(F,Ft,t,1)
+S0 = {determinant sylvesterMatrix(F,Ft,t)}
+I = ideal(S0|S1)
+I = saturate(I, ideal c_5)
+Delta = saturate(I, ideal discriminant(S2#2*t^2+S2#1*t+S2#0,t))
+
+
+S = QQ[y_0..y_3,s,t]
+f = s^3*t^2+s^3+t^2+s+t+1
+subL = {t => -(y_0+y_1*s) / (y_2+y_3*s)}
+g = sub(f,subL)
+g = numerator(g)
+C = reverse flatten entries last coefficients(g, Variables => {s})
+T = QQ[c_0..c_5, y_0..y_3]
+subL = apply(6, i -> (c_i => sub(C#i,T)))
+I = sub(sub(Delta, T),subL)
+U = QQ[y_0..y_3]
+I = sub(I,U)
+I = saturate I  --took 6 seconds to compute

@@ -1,0 +1,11 @@
+R = QQ[x_0..x_3, c_0..c_5,q_(0,1),q_(0,2),q_(0,3),q_(1,2),q_(1,3),q_(2,3)][t]
+f = x_0^5+x_1^5+x_2^5+x_3^5+(x_0+x_1+x_2+x_3)^5+x_0*x_1*x_2*x_3*(x_0+x_1+x_2+x_3)
+Delta = ideal(20*c_0*c_4-8*c_1*c_3+3*c_2^2, 50*c_0*c_5-6*c_1*c_4+c_2*c_3, 20*c_1*c_5-8*c_2*c_4+3*c_3^2)
+subL = {x_0 => q_(0,1), x_1 => t*q_(0,1), x_2 => t*q_(0,2)-q_(1,2), x_3 => t*q_(0,3)-q_(1,3)}
+C = flatten entries last coefficients(sub(f, subL))
+subL = apply(6, i -> (c_i => C#i))
+Fl = sub(Delta, subL)
+S = QQ[q_(0,1),q_(0,2),q_(0,3),q_(1,2),q_(1,3),q_(2,3)]
+Fl = sub(Fl,S) + ideal(q_(0,1)*q_(2,3)-q_(0,2)*q_(1,3)+q_(0,3)*q_(1,2))
+Fl = saturate(Fl, ideal q_(0,1)) --took 4 minutes to compute
+

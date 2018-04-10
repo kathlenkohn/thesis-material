@@ -1,0 +1,56 @@
+subresultant = (p,q,t,k) -> (
+--computes k-th subresultant of two polynomials p and q in one variable t
+d0 = degree (t,p);
+d1 = degree (t,q);
+D = d0+d1;
+M = sylvesterMatrix (p,q,t);
+L1 = apply(k, i -> D-i-1);
+L2 = L1 | apply(k, i -> d1-i-1);
+M = submatrix'(M, L2, L1);
+S = apply(k+1, i -> D-(k+1+i));
+result = {};
+scan (S, s -> result = result|{determinant submatrix'(M, , delete(s,S))});
+result
+)
+
+R = QQ[c_0..c_5][t]
+
+--Delta_3(3)
+d = 3
+F = sum apply(d+1, i -> c_i*t^i)
+Ft = diff(t,F)
+S2 = subresultant(F,Ft,t,2)
+S1 = subresultant(F,Ft,t,1)
+S0 = {determinant sylvesterMatrix(F,Ft,t)}
+I = ideal(S0|S1)
+I = saturate(I, ideal c_d)
+J = ideal(discriminant(S2#2*t^2+S2#1*t+S2#0,t))
+J = saturate(J, ideal(S2#2))
+Delta_(3,3) = I+J
+
+--Delta_4(4)
+d = 4
+F = sum apply(d+1, i -> c_i*t^i)
+Ft = diff(t,F)
+S3 = subresultant(F,Ft,t,3)
+S2 = subresultant(F,Ft,t,2)
+S1 = subresultant(F,Ft,t,1)
+S0 = {determinant sylvesterMatrix(F,Ft,t)}
+I = ideal(S0|S1|S2)
+I = saturate(I, ideal c_d)
+J = sub(Delta_(3,3), apply(4, i -> (c_i => S3#i)))
+Delta_(4,4) = I+J
+
+--Delta_4(5)
+d = 5
+F = sum apply(d+1, i -> c_i*t^i)
+Ft = diff(t,F)
+S3 = subresultant(F,Ft,t,3)
+S2 = subresultant(F,Ft,t,2)
+S1 = subresultant(F,Ft,t,1)
+S0 = {determinant sylvesterMatrix(F,Ft,t)}
+I = ideal(S0|S1|S2)
+J = sub(Delta_(3,3), apply(4, i -> (c_i => S3#i)))
+Delta_(4,5) = I+J
+Delta_(4,5) = saturate(Delta_(4,5), ideal c_d)
+Delta_(4,5) = saturate(Delta_(4,5), ideal first S3)

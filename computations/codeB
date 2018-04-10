@@ -1,0 +1,4 @@
+loadPackage "Coisotropy"
+R = QQ[a..d]
+I = ideal(a*d-b*c)
+coisotropicForm (I,1)

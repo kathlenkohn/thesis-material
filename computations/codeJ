@@ -1,0 +1,59 @@
+subresultant = (p,q,t,k) -> (
+--computes k-th subresultant of two polynomials p and q in one variable t
+d0 = degree (t,p);
+d1 = degree (t,q);
+D = d0+d1;
+M = sylvesterMatrix (p,q,t);
+L1 = apply(k, i -> D-i-1);
+L2 = L1 | apply(k, i -> d1-i-1);
+M = submatrix'(M, L2, L1);
+S = apply(k+1, i -> D-(k+1+i));
+result = {};
+scan (S, s -> result = result|{determinant submatrix'(M, , delete(s,S))});
+result
+)
+
+R = QQ[x_0..x_3,y_0..y_3]
+X = ideal(sum apply(4, i -> y_i^2), sum apply(4, i -> y_i^3))
+
+--compute T(X)
+v = transpose matrix{{0,0,0,0,x_0,x_1,x_2,x_3}}
+Inc = X + ideal flatten entries((transpose jacobian X)*v)
+--saturating by <y_0..y_3> takes too long, instead try the following:
+Inc = saturate(Inc, ideal y_0) --took 11.8 minutes to compute
+eliminate(Inc, {y_0,y_1,y_2,y_3}) --took 51.9 seconds to compute
+
+--compute curve in the Grassmannian corresponding to D(X)
+S = QQ[x_0..x_3,p_(0,1),p_(0,2),p_(0,3),p_(1,2),p_(1,3),p_(2,3)][t]
+subL = {x_0 => -p_(2,3), x_1 => t*p_(2,3), x_2 => p_(0,3)-t*p_(1,3), x_3 => t*p_(1,2)-p_(0,2)}
+f1 = sub(sum apply(4, i -> x_i^2), subL)
+f2 = sub(sum apply(4, i -> x_i^3), subL)
+S0 = {determinant sylvesterMatrix(f1,f2,t)}
+S1 = subresultant(f1,f2,t,1)
+S2 = subresultant(f1,f2,t,2)
+Dl = ideal (S0|S1|S2) + ideal(p_(0,1)*p_(2,3)-p_(0,2)*p_(1,3)+p_(0,3)*p_(1,2))
+G = QQ[p_(0,1),p_(0,2),p_(0,3),p_(1,2),p_(1,3),p_(2,3)]
+Dl = sub(Dl,G)
+c1 = first flatten entries last coefficients f1
+c2 = first flatten entries last coefficients f2
+leadCoeffs = sub(ideal (c1,c2),G)
+Dl = saturate(Dl, leadCoeffs)
+Dl = saturate(Dl, ideal p_(2,3))
+--Dl has 2 components:
+Dl1 = first decompose Dl
+Dl2 = last decompose Dl
+
+--compute D(X)
+S = QQ[x_0..x_3,p_(0,1),p_(0,2),p_(0,3),p_(1,2),p_(1,3),p_(2,3)]
+M = matrix{{0, p_(0,1), p_(0,2), p_(0,3)},
+  {-p_(0,1), 0, p_(1,2), p_(1,3)},
+  {-p_(0,2), -p_(1,2), 0, p_(2,3)},
+  {-p_(0,3), -p_(1,3), -p_(2,3), 0}}
+v = transpose matrix{{x_0,x_1,x_2,x_3}}
+plVars = {p_(0,1),p_(0,2),p_(0,3),p_(1,2),p_(1,3),p_(2,3)}
+J1 = ideal flatten entries (M*v)+sub(Dl1,S)
+J1 = saturate(J1, ideal plVars)
+D1 = eliminate(J1, plVars)
+J2 = ideal flatten entries (M*v)+sub(Dl2,S) 
+J2 = saturate(J2, ideal plVars)
+D2 = eliminate(J2, plVars)

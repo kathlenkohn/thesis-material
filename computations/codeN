@@ -1,0 +1,50 @@
+R = QQ[x_0..x_3,v_0..v_3]
+f = sum apply(4, i -> x_i^3)+(x_0+2*x_1+3*x_2+4*x_3)^3
+H = matrix apply(4, i -> apply(4, j -> diff(x_i, diff(x_j,f))))
+P = determinant H
+I = ideal (f,P) + ideal apply(4, i -> sum apply(4, j -> H_(i,j)*v_j))
+I = saturate (I, ideal apply(4, i -> x_i))
+Gr = Grassmannian (1,3, CoefficientRing => QQ)
+G = ring Gr
+RQ = R / I
+M = matrix{apply(4, i -> x_i), apply(4, i -> v_i)}
+PL = {determinant submatrix (M, {0,1}), determinant submatrix (M, {0,2}), determinant submatrix (M, {1,2}), determinant submatrix (M, {0,3}), determinant submatrix (M, {1,3}), determinant submatrix (M, {2,3})}
+F = map(RQ, G, PL)
+InflPar = kernel F  --took 11.3 seconds to compute
+
+----we can also try to stab the parabolic surface with a line
+S = QQ[(flatten entries vars G)|{t}]
+Q = matrix{{0, p_(2,3), -p_(1,3), p_(1,2)},
+  {-p_(2,3), 0, p_(0,3), -p_(0,2)},
+  {p_(1,3), -p_(0,3), 0, p_(0,1)},
+  {-p_(1,2), p_(0,2), -p_(0,1), 0}}
+Inters = sub(InflPar,S) + ideal flatten entries (matrix{{t, 1, t-1, t+1}}*Q)
+plVars = {p_(0,1), p_(0,2), p_(0,3), p_(1,2), p_(1,3), p_(2,3)}
+Inters = saturate (Inters, ideal plVars)  --took 19 seconds to compute
+sols = eliminate(Inters, plVars)
+
+--compute real solutions, e.g., using command "realroots" of maxima
+
+--compute dual curve to parabolic surface
+use R
+M = matrix{apply(4, i -> diff(x_i,f)), apply(4, i -> v_i)}
+I = ideal(f,P)+minors(2,M)
+xVars = {x_0,x_1,x_2,x_3}
+I = saturate(I, ideal xVars)  --took 5.5 minutes to compute
+Pdual = eliminate(I,xVars)
+
+T = QQ[v_0..v_3,t]
+Pdual = sub(Pdual,T)
+L = flatten entries mingens Pdual
+g_1 = first L
+g_2 = last L
+M = matrix{
+  apply(4, i -> diff(v_i,g_1)),
+  apply(4, i -> diff(v_i,g_2)),
+  {t, 1, t-1, t+1}}
+K = Pdual+minors(3,M)
+M = M^{0,1}
+sat = minors(2,M)
+K = saturate(K,sat)  --took 51.6 minutes to compute
+sols = eliminate(K, {v_0,v_1,v_2,v_3})
+
