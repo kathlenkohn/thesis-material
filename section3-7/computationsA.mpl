@@ -1,7 +1,7 @@
 # This worksheet is meant as a complement to “Computing the Chow variety of quadratic space curves”, by Peter Bürgisser, Kathlén Kohn, Pierre Lairez, and Bernd Sturmfels.
 # 
 # The package FGb, to compute efficiently Groebner basis, is available at
-# http://www-polsys.lip6.fr/~jcf/Software/FGb/Download/index.html
+# http://www-polsys.lip6.fr/~jcf/FGb/FGb/index.html
 with(FGb): with(LinearAlgebra):
 # The computation of some of the Groebner bases require ~10 GB of RAM, so for convenienc, some of the results are preloaded.
 read "GBs.mpl":

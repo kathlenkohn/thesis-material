@@ -92,7 +92,7 @@
 <Text-field style="Text" layout="Normal">This worksheet is meant as a complement to <Font encoding="UTF-8">\342\200\234Computing the Chow variety of quadratic space curves\342\200\235, by Peter B\303\274rgisser, Kathl\303\251n Kohn, Pierre Lairez, and Bernd Sturmfels.</Font></Text-field>
 <Text-field style="Text" layout="Normal"></Text-field>
 <Text-field style="Text" layout="Normal">The package FGb, to compute efficiently Groebner basis, is available at</Text-field>
-<Text-field style="Text" layout="Normal">http://www-polsys.lip6.fr/~jcf/Software/FGb/Download/index.html</Text-field>
+<Text-field style="Text" layout="Normal">http://www-polsys.lip6.fr/~jcf/FGb/FGb/index.html</Text-field>
 </Input>
 </Group>
 <Group labelreference="L1" drawlabel="true">
